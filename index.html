@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SafeLink AI - Smart Community Safety & Crisis Assistant</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+  <!-- Custom Styling -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- App Wrapper -->
+  <div class="app-container">
+    
+    <!-- Top Header -->
+    <header class="app-header">
+      <div class="header-logo">
+        <div class="logo-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <div class="pulse-ring"></div>
+        </div>
+        <div>
+          <h1>SafeLink AI</h1>
+          <p class="subtitle">Smart Community Safety & Crisis Assistant</p>
+        </div>
+      </div>
+
+      <!-- Live Broadcast Info Banner -->
+      <div id="live-banner" class="live-banner banner-low">
+        <span class="pulse-indicator"></span>
+        <span id="banner-text">Status: Active Monitoring. No active community-wide threats.</span>
+      </div>
+
+      <!-- Header Settings & Simulator -->
+      <div class="header-controls">
+        <div class="simulator-selector">
+          <label for="simulator-select" class="control-label">Simulate Crisis Event:</label>
+          <select id="simulator-select" class="styled-select">
+            <option value="none">🟢 Normal Operations</option>
+            <option value="flood">🌊 Flash Flood Warning</option>
+            <option value="earthquake">🌋 Richter 7.1 Earthquake</option>
+            <option value="blackout">🔌 Total Power Outage</option>
+          </select>
+        </div>
+        
+        <div class="language-selector">
+          <select id="lang-select" class="styled-select-small">
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+            <option value="ja">日本語</option>
+            <option value="hi">हिन्दी</option>
+          </select>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Grid Dashboard -->
+    <main class="dashboard-grid">
+      
+      <!-- Left Column: SOS & Safety Alerts -->
+      <section class="grid-col col-left">
+        <!-- SOS Console -->
+        <div class="dashboard-panel panel-sos">
+          <h2 class="panel-title text-danger">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0zM12 9v4M12 17h.01"/></svg>
+            Emergency Dispatch & SOS
+          </h2>
+          <p class="panel-desc">Tap holding the button below to alert emergency response teams and broadcast your location.</p>
+          
+          <button id="sos-btn" class="sos-trigger-btn">
+            <span class="sos-text">SOS</span>
+            <span class="sos-glow"></span>
+          </button>
+
+          <!-- Distress Signaling Toolbar -->
+          <div class="distress-tools">
+            <h3>Distress Signaling Beacon</h3>
+            <div class="tools-row">
+              <button id="toggle-strobe-btn" class="beacon-action-btn">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                Rescue Strobe
+              </button>
+              <button id="toggle-siren-btn" class="beacon-action-btn">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 18a6 6 0 100-12 6 6 0 000 12zM12 6v6m0 0l2 2"/></svg>
+                Audio Beacon
+              </button>
+            </div>
+            
+            <!-- Siren Synthesizer Parameters -->
+            <div class="siren-synth-controls hidden" id="siren-synth-controls">
+              <div class="range-group">
+                <label for="siren-pitch">Siren Frequency (Pitch)</label>
+                <input type="range" id="siren-pitch" min="400" max="1500" value="880" class="styled-range">
+                <span id="siren-pitch-value">880Hz</span>
+              </div>
+              <div class="range-group">
+                <label for="siren-volume">Volume</label>
+                <input type="range" id="siren-volume" min="0" max="100" value="50" class="styled-range">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Family Board Widget -->
+        <div class="dashboard-panel panel-family">
+          <h2 class="panel-title">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zm10 10v-2a4 4 0 00-3-3.87m-4-12a4 4 0 010 7.75"/></svg>
+            Family Check-In Board
+          </h2>
+          <p class="panel-desc">Ensure family members report their status. Add and check in members below.</p>
+          
+          <div class="family-list" id="family-list">
+            <!-- Simulated Family Statuses will be appended here -->
+          </div>
+
+          <!-- Add Member Form Inline -->
+          <form id="add-family-form" class="inline-form">
+            <input type="text" id="member-name" placeholder="Member Name" required class="styled-input-small">
+            <select id="member-status-select" class="styled-select-small">
+              <option value="Safe">Safe</option>
+              <option value="Sheltered">Sheltered</option>
+              <option value="Unreachable">Unreachable</option>
+            </select>
+            <button type="submit" class="styled-btn-small">Add</button>
+          </form>
+        </div>
+
+        <!-- Safety Notification Feed -->
+        <div class="dashboard-panel panel-feed flex-grow">
+          <h2 class="panel-title">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+            Active Safety Alerts
+          </h2>
+          <div class="alerts-feed-wrapper" id="alerts-feed-wrapper">
+            <!-- Alert items populated by JS -->
+          </div>
+        </div>
+      </section>
+      
+      <!-- Center Column: Map & Directory -->
+      <section class="grid-col col-center">
+        <!-- Interactive Map Panel -->
+        <div class="dashboard-panel panel-map">
+          <div class="map-header">
+            <div class="map-title-row">
+              <h2 class="panel-title">
+                <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                Emergency Live Map
+              </h2>
+              <div class="map-legend">
+                <span class="legend-item"><span class="dot-icon green"></span>Safe Zones</span>
+                <span class="legend-item"><span class="dot-icon red"></span>Hazards</span>
+                <span class="legend-item"><span class="dot-icon orange"></span>Shelters</span>
+              </div>
+            </div>
+            <div class="map-actions">
+              <button id="trigger-report-btn" class="styled-btn btn-danger">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+                Report Public Incident
+              </button>
+            </div>
+          </div>
+
+          <!-- Map Container -->
+          <div class="map-wrapper">
+            <div id="leaflet-map"></div>
+            
+            <!-- Map Layers Filter Bar -->
+            <div class="map-layer-filters">
+              <span class="filter-title">Toggle Overlay:</span>
+              <label class="checkbox-container">
+                <input type="checkbox" id="chk-safe-zones" checked>
+                <span class="checkmark"></span> Safe Zones
+              </label>
+              <label class="checkbox-container">
+                <input type="checkbox" id="chk-hazards" checked>
+                <span class="checkmark"></span> Hazards
+              </label>
+              <label class="checkbox-container">
+                <input type="checkbox" id="chk-shelters" checked>
+                <span class="checkmark"></span> Shelters
+              </label>
+              <label class="checkbox-container">
+                <input type="checkbox" id="chk-heatmap" checked>
+                <span class="checkmark"></span> Risk Heatmap
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Emergency Resource Directory -->
+        <div class="dashboard-panel panel-directory">
+          <div class="directory-header">
+            <h2 class="panel-title">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+              Emergency Contact Registry
+            </h2>
+            <input type="text" id="directory-search" placeholder="Search departments or services..." class="styled-input-small">
+          </div>
+          <div class="directory-grid" id="directory-grid">
+            <!-- Loaded by JavaScript -->
+          </div>
+        </div>
+      </section>
+      
+      <!-- Right Column: AI Assistant & Guides -->
+      <section class="grid-col col-right">
+        <!-- AI Crisis Chatbot -->
+        <div class="dashboard-panel panel-bot">
+          <div class="bot-header">
+            <h2 class="panel-title text-accent">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+              AI Crisis Counsel
+            </h2>
+            <div class="bot-header-actions">
+              <button id="tts-toggle-btn" class="toggle-icon-btn active" title="Voice Read-Aloud Toggle">
+                <svg id="speaker-on-icon" class="icon" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M12 18.75V5.25L7.75 9.5H4.5V14.5H7.75L12 18.75z"/></svg>
+              </button>
+            </div>
+          </div>
+          
+          <!-- Chat Output Container -->
+          <div class="chat-container">
+            <div class="chat-messages" id="chat-messages">
+              <div class="message message-bot">
+                Hello, I am SafeLink AI. Select a scenario above or enter your crisis query below to receive immediate preparedness and survival instructions.
+              </div>
+            </div>
+            <!-- Typing Indicator -->
+            <div class="typing-indicator hidden" id="typing-indicator">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+
+          <!-- Quick Actions/Prompts Row -->
+          <div class="quick-prompts-scroller">
+            <button class="quick-prompt-btn">Water survival guide</button>
+            <button class="quick-prompt-btn">Check active aftershock tips</button>
+            <button class="quick-prompt-btn">Where is nearest shelter?</button>
+            <button class="quick-prompt-btn">Siren frequencies for rescue</button>
+          </div>
+
+          <!-- Chat Input -->
+          <div class="chat-input-row">
+            <button id="mic-btn" class="mic-trigger-btn" title="Simulate Voice Input">
+              <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+            </button>
+            
+            <input type="text" id="chat-input" placeholder="Ask about evacuation, hazards, first aid..." class="chat-input-field">
+            
+            <button id="chat-send-btn" class="chat-submit-btn">
+              <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+
+          <!-- Mic Listening Animation (Hidden by default) -->
+          <div id="voice-recognition-visualizer" class="voice-visualizer-bar hidden">
+            <span class="bar bar-1"></span>
+            <span class="bar bar-2"></span>
+            <span class="bar bar-3"></span>
+            <span class="bar bar-4"></span>
+            <span class="bar bar-5"></span>
+            <span class="voice-visualizer-text">Listening for speech...</span>
+          </div>
+        </div>
+
+        <!-- Survival Guides & Checklists -->
+        <div class="dashboard-panel panel-guides">
+          <h2 class="panel-title">
+            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+            Crisis Checklists & Guides
+          </h2>
+          <div class="guides-accordion" id="guides-accordion">
+            <!-- Accordion cards populated dynamically from guides.js -->
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer-bar">
+      <p>&copy; 2026 SafeLink AI Project. Geolocation and AI simulation enabled for crisis mitigation.</p>
+    </footer>
+
+  </div>
+
+  <!-- FLOATING MODAL OVERLAYS -->
+
+  <!-- SOS COUNTDOWN OVERLAY -->
+  <div class="overlay-modal hidden" id="sos-overlay">
+    <div class="sos-card">
+      <div class="danger-glow-background"></div>
+      <div class="sos-icon-danger">
+        <svg width="48" height="48" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+      </div>
+      <h2 class="sos-title">SOS EMERGENCY BROADCAST</h2>
+      <p class="sos-alert-desc">Dispatching coordinates to regional services. Siren will sound in:</p>
+      
+      <div class="sos-timer" id="sos-timer-display">5</div>
+      
+      <p class="sos-fineprint">Your location coordinates and family board status will be forwarded instantly.</p>
+      
+      <button id="cancel-sos-btn" class="styled-btn btn-danger-pulse">CANCEL DISPATCH</button>
+    </div>
+  </div>
+
+  <!-- FULLSCREEN STROBE LIGHT OVERLAY -->
+  <div class="strobe-overlay hidden" id="strobe-overlay">
+    <div class="strobe-content">
+      <h2>RESCUE SIGNALING STROBE BEACON</h2>
+      <p>Hold this screen up towards search teams or helicopters.</p>
+      <div class="range-group white-text">
+        <label for="strobe-speed">Flashing Frequency</label>
+        <input type="range" id="strobe-speed" min="50" max="800" value="200" class="styled-range">
+      </div>
+      <button id="close-strobe-btn" class="styled-btn btn-white">CLOSE STROBE</button>
+    </div>
+  </div>
+
+  <!-- INCIDENT REPORTING MODAL -->
+  <div class="overlay-modal hidden" id="report-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h2>Report Community Safety Incident</h2>
+        <button id="close-report-modal" class="close-icon-btn">&times;</button>
+      </div>
+      <form id="incident-report-form">
+        <div class="form-group">
+          <label for="incident-type">Incident Type</label>
+          <select id="incident-type" class="styled-select" required>
+            <option value="fire">🔥 Fire / Wildfire</option>
+            <option value="hazard">⚠️ Physical Hazard (Powerline, Road block)</option>
+            <option value="medical">🚑 Medical Emergency</option>
+            <option value="crime">🚨 Crime / Active Threat</option>
+            <option value="missing">👤 Missing Person</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="incident-urgency">Urgency Level</label>
+          <div class="radio-toggle-group">
+            <label class="radio-label">
+              <input type="radio" name="urgency" value="critical" checked>
+              <span class="radio-custom red">Critical</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="urgency" value="warning">
+              <span class="radio-custom orange">Warning</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="urgency" value="info">
+              <span class="radio-custom blue">Info Only</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="incident-title">Incident Title / Brief Location</label>
+          <input type="text" id="incident-title" placeholder="e.g. Broken gas pipe at 5th and Madison" required class="styled-input">
+        </div>
+
+        <div class="form-group">
+          <label for="incident-desc">Details & Description</label>
+          <textarea id="incident-desc" rows="3" placeholder="Provide extra details (numbers of injured, blockades, evacuation paths...)" required class="styled-textarea"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Geographic Coordinates</label>
+          <div class="geo-input-row">
+            <input type="number" id="incident-lat" step="0.0001" placeholder="Latitude" value="28.6139" required class="styled-input-small">
+            <input type="number" id="incident-lng" step="0.0001" placeholder="Longitude" value="77.2090" required class="styled-input-small">
+            <button type="button" id="map-picker-btn" class="styled-btn-small select-geo-btn">Click on Map</button>
+          </div>
+          <span class="form-help-text">You can click directly on the map behind to choose coordinates.</span>
+        </div>
+
+        <button type="submit" class="styled-btn btn-danger-full">SUBMIT EMERGENCY REPORT</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- CALLING OVERLAY DIALOG -->
+  <div class="overlay-modal hidden" id="call-overlay">
+    <div class="call-card">
+      <div class="call-icon">
+        <svg width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.94.725l.548 2.2a1 1 0 01-.321.988l-1.305.98a10.582 10.582 0 004.872 4.872l.98-1.305a1 1 0 01.988-.321l2.2.548a1 1 0 01.725.94V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+      </div>
+      <h3 id="call-target">Calling Emergency Services...</h3>
+      <div class="phone-number" id="call-number">112</div>
+      <div class="call-connection-pulse">
+        <span class="c-ring"></span>
+        <span class="c-ring"></span>
+      </div>
+      <div class="call-info">
+        <p><strong>GPS Dispatch coordinates:</strong></p>
+        <p class="gps-digits" id="call-gps">Latitude: 28.6139, Longitude: 77.2090</p>
+        <p class="call-status-subtitle">Transmitting emergency profile and safety status...</p>
+      </div>
+      <button id="end-call-btn" class="styled-btn btn-danger-pulse">END CALL</button>
+    </div>
+  </div>
+
+  <!-- Leaflet Map JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <!-- Data Definitions -->
+  <script src="guides.js"></script>
+  <!-- Application Logic -->
+  <script src="app.js"></script>
+
+</body>
+</html>
